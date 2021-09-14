@@ -12,9 +12,26 @@ class Btn extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 100,
+        
         decoration: BoxDecoration(
-            // border: Border.all(width: 1),
-            color: number == 1 ?const Color(0xffCC004A): const Color(0xff212020),
+           boxShadow: [
+                    BoxShadow(
+                      color:number == 1 ?const Color(0xffDA0050).withOpacity(0.5): const Color(0xff212020).withOpacity(0.5),
+                      offset:  const Offset(
+                        0,
+                        3.0,
+                      ),
+                      blurRadius: 7.0,
+                      spreadRadius: 2,
+                    ), 
+                    // BoxShadow(
+                    //   color: number == 1 ?const Color(0xffDA0050): const Color(0xff212020),
+                    //   offset: const Offset(0.0, 0.0),
+                    //   blurRadius: 0.0,
+                    //   spreadRadius: 0.0,
+                    // ), 
+                  ],
+            color: number == 1 ?const Color(0xffDA0050): const Color(0xff212020),
             borderRadius: const BorderRadius.all(Radius.circular(10))),
         alignment: Alignment.center,
         padding: EdgeInsets.only(
@@ -25,7 +42,7 @@ class Btn extends StatelessWidget {
         child: Text(
           title,
           textAlign: TextAlign.center,
-          style: number==1?const TextStyle(fontSize: 16,fontWeight: FontWeight.w700):const TextStyle(fontSize: 16)
+          style: number==1? const TextStyle(fontSize: 16,fontWeight: FontWeight.w700,color: Colors.white,):const  TextStyle(fontSize: 16,color: Color(0xff888888))
         ),
       ),
     );

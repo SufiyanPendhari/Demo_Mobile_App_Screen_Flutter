@@ -7,28 +7,44 @@ class MovieTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>MoviePage(title: data.title,)));
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MoviePage(
+                      title: data.title,
+                    )));
       },
       child: Stack(
         children: [
           Container(
-              padding: const EdgeInsets.only(top: 0, bottom: 20, left: 20),
-              height: 350,
-              width: 240,
-              child: Image.network(
+           
+            margin: const EdgeInsets.only(top: 0, bottom: 20, left: 20),
+            height: 330,
+            width: 240,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child:  Image.network(
                 data.poster,
-                height: 350,
-                width: 200,
+                height: 330,
+                width: 240,
                 fit: BoxFit.cover,
-              )),
+              ),
+            )
+            
+          ),
           Positioned(
-            width: 80,
-            left: 90,
+            left: data.status == "New"
+                    ? 115
+                    : data.status == "Latest"
+                        ? 115
+                        : data.status == "Trending"
+                            ? 100
+                            : 60,
             bottom: 5,
             child: Container(
-              height: 30,
-              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
               color: data.status == "New"
                   ? const Color(0xff00BC04)
                   : data.status == "Latest"
@@ -36,6 +52,10 @@ class MovieTile extends StatelessWidget {
                       : data.status == "Trending"
                           ? const Color(0xff00BC04)
                           : Colors.transparent,
+              ),
+              padding: const EdgeInsets.only(left:10,right:10),
+              height: 30,
+              alignment: Alignment.center,
               child: Text(
                 data.status == "New"
                     ? "New"

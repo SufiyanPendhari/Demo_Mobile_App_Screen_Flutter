@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:demo_application/Widgets/movie_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +34,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   var isActive = 1;
-  int _selectedIndex = 0;
   int _state = 0;
   List newData = [];
   List popularData = [];
@@ -43,21 +41,13 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> newDataWidget = [];
   List<Widget> popularDataWidget = [];
   List<Widget> trendingDataWidget = [];
-  void _onItemTapped(int index) {
-    setState(() {
-      if (index != 3) {
-        _selectedIndex = index;
-        _state = index;
-      }
-    });
-    index == 3 ? _key.currentState!.openEndDrawer() : Void;
-  }
+ 
 
   var url =
       Uri.parse('http://www.omdbapi.com/?i=tt3896198&apikey=c4033450&s=Movies');
   // calling api
-  void callApi() {
-    http
+  Future callApi() async {
+    return await http
         .get(url)
         .then((value) => jsonDecode(value.body))
         .then((value) => value["Search"])
@@ -135,22 +125,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff040203),
+        backgroundColor: const Color(0xff040203),
         key: _key,
-        // bottom navigation bar
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "",backgroundColor: Color(0xff171717)),
-            BottomNavigationBarItem(icon: Icon(Icons.star), label: "",backgroundColor: Color(0xff171717)),
-            BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: "",backgroundColor: Color(0xff171717)),
-            BottomNavigationBarItem(icon: Icon(Icons.menu), label: "",backgroundColor: Color(0xff171717))
-          ],
-          showSelectedLabels: false,
-          selectedItemColor: const Color(0xffCC004A),
-          onTap: _onItemTapped,
-          currentIndex: _selectedIndex,
-        ),
-        // end drawer
+        bottomNavigationBar: BottomAppBar(child: 
+          Row(
+            children: [
+              bottomButton(Icon(Icons.home,color:_state==0?const Color(0xffDA0050):const Color(0xff888888),),(){
+                setState(() {
+                  _state=0;
+                });
+              }),
+              bottomButton( Icon(Icons.star,color:_state==1?const Color(0xffDA0050):const Color(0xff888888),),(){
+                setState(() {
+                  _state=1;
+                });
+              }),
+              bottomButton( Icon(Icons.bookmark,color:_state==2?const Color(0xffDA0050):const Color(0xff888888),),
+              (){
+                setState(() {
+                  _state=2;
+                });
+              }),
+              bottomButton(const Icon(Icons.menu,color: Color(0xff888888),),(){
+                _key.currentState!.openEndDrawer();
+              }),
+            ],
+          ),
+    ),
         endDrawer: const Drawer(
           child: Center(
             child: Text("Drawer"),
@@ -191,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   onTap: () {
                                     setState(() {
                                       isActive = 1;
+                                      callApi();
                                     });
                                   },
                                   number: isActive == 1 ? 1 : 0,
@@ -242,5 +244,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ));
+  }
+
+  Expanded bottomButton(icon,onTap) {
+
+    return Expanded(
+              child: InkWell(
+                onTap: onTap,
+                child: Container(
+                  color: const Color(0xff171717),
+                  child: icon,
+                  height: 60,
+                  width: double.infinity,
+                ),
+              ),
+            );
   }
 }
